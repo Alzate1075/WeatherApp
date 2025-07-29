@@ -11,7 +11,6 @@ export default function Sidebar({
   const [showSearch, setShowSearch] = useState(false);
   const [loadingLocation, setLoadingLocation] = useState(false);
 
-  // Extraer datos del clima actual del weatherData
   const currentWeather = weatherData?.current;
   const todayForecast = weatherData?.daily?.[0];
   const cityInfo = weatherData?.cityInfo;
@@ -53,8 +52,8 @@ export default function Sidebar({
           onClose: () => setShowSearch(false),
         })}
 
-      <div className="w-full bg-[url('/others/Cloud-background2.png')] bg-no-repeat bg-cover bg-center pt-6 z-0">
-        <div className="flex justify-between z-10 gap-4 mx-6">
+      <div className="w-full bg-[url('/others/Cloud-background2.png')] bg-no-repeat bg-cover bg-center pt-10 z-0">
+        <div className="flex justify-around z-10 gap-4 mx-6">
           <button
             className="cursor-pointer w-45 bg-gray-600 text-white py-2 hover:bg-gray-700 transition-colors"
             onClick={() => setShowSearch(true)}
@@ -72,7 +71,7 @@ export default function Sidebar({
           </button>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-2">
           {currentWeather && (
             <img
               src={getWeatherIcon(currentWeather.weather[0].icon)}
@@ -88,13 +87,13 @@ export default function Sidebar({
         <span className="text-4xl align-top text-gray-400">°C</span>
       </div>
 
-      <div className="text-4xl text-gray-300 capitalize">
+      <div className="text-3xl text-gray-300 capitalize">
         {currentWeather ? currentWeather.weather[0].description : "Cargando..."}
       </div>
 
       <div className="mt-10 text-sm text-gray-400 space-y-2">
         <p>Today • {formatDate(Date.now() / 1000)}</p>
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2 mb-10">
           <img src="/location_on.svg" alt="Location" className="w-4 h-4" />
           <p className="text-white">
             {cityInfo?.name || city}
@@ -102,36 +101,6 @@ export default function Sidebar({
           </p>
         </div>
       </div>
-
-      {/* Información adicional del clima actual */}
-      {currentWeather && (
-        <div className="mt-8 w-full px-6">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="bg-[#2A2D3A] p-3 rounded-lg">
-              <p className="text-gray-400">Humedad</p>
-              <p className="text-white text-lg">{currentWeather.humidity}%</p>
-            </div>
-            <div className="bg-[#2A2D3A] p-3 rounded-lg">
-              <p className="text-gray-400">Viento</p>
-              <p className="text-white text-lg">
-                {Math.round(currentWeather.wind_speed)} km/h
-              </p>
-            </div>
-            <div className="bg-[#2A2D3A] p-3 rounded-lg">
-              <p className="text-gray-400">Presión</p>
-              <p className="text-white text-lg">
-                {currentWeather.pressure} hPa
-              </p>
-            </div>
-            <div className="bg-[#2A2D3A] p-3 rounded-lg">
-              <p className="text-gray-400">UV Index</p>
-              <p className="text-white text-lg">
-                {Math.round(currentWeather.uvi)}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

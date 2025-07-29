@@ -46,7 +46,7 @@ function App() {
         await fetchWeatherData(cityName);
       } catch (error) {
         console.error("Error getting initial location:", error);
-        // Fallback a una ciudad por defecto
+
         await fetchWeatherData("Bogotá");
       }
     };
@@ -61,10 +61,7 @@ function App() {
         weatherData={weatherData}
         setWeatherData={handleWeatherDataUpdate}
       >
-        <Search
-          setCity={handleCityChange}
-          onClose={() => {}} // Placeholder
-        />
+        <Search setCity={handleCityChange} onClose={() => {}} />
       </Sidebar>
 
       {loading ? (

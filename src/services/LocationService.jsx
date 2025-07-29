@@ -8,7 +8,7 @@ export async function getCityByIP() {
     return data.city || "Bogotá";
   } catch (error) {
     console.error("Error al obtener la ubicación por IP:", error);
-    return "Bogotá"; // fallback
+    return "Bogotá";
   }
 }
 
@@ -18,7 +18,6 @@ export async function getLocationByIP() {
     if (!res.ok) throw new Error("No se pudo obtener la ubicación");
     const data = await res.json();
 
-    // Parsear las coordenadas
     const [lat, lon] = data.loc.split(",").map((coord) => parseFloat(coord));
 
     return {

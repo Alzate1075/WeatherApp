@@ -7,11 +7,11 @@ export function WeatherProvider({ children }) {
   const [city, setCity] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isCelsius, setIsCelsius] = useState(true);
 
   const API_KEY = import.meta.env.VITE_API_KEY_WEATHER;
   const IPINFO_TOKEN = import.meta.env.VITE_IPINFO_TOKEN;
 
-  // Obtener ciudad desde IP
   const getCityFromIP = async () => {
     try {
       const res = await fetch(`https://ipinfo.io/json?token=${IPINFO_TOKEN}`);
@@ -23,7 +23,6 @@ export function WeatherProvider({ children }) {
     }
   };
 
-  // Obtener clima a partir del nombre de ciudad
   const fetchWeatherByCity = async (cityName) => {
     try {
       setLoading(true);
@@ -46,7 +45,6 @@ export function WeatherProvider({ children }) {
     }
   };
 
-  // Al iniciar, obtener ciudad desde IP y luego el clima
   useEffect(() => {
     const init = async () => {
       const initialCity = await getCityFromIP();
@@ -56,7 +54,6 @@ export function WeatherProvider({ children }) {
     init();
   }, []);
 
-  // Si cambia la ciudad manualmente
   useEffect(() => {
     if (city) {
       fetchWeatherByCity(city);
@@ -64,7 +61,16 @@ export function WeatherProvider({ children }) {
   }, [city]);
 
   return (
-    <WeatherContext.Provider value={{ city, setCity, weatherData, loading }}>
+    <WeatherContext.Provider
+      value={{
+        city,
+        setCity,
+        weatherData,
+        loading,
+        isCelsius,
+        setIsCelsius,
+      }}
+    >
       {children}
     </WeatherContext.Provider>
   );

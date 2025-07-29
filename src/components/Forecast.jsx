@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import { useWeather } from "../services/WeatherContext";
 
 export default function Forecast({ weatherData }) {
   const [view, setView] = useState("5days");
 
-  // Verificar que tenemos los datos necesarios
   if (!weatherData || !weatherData.daily || weatherData.daily.length === 0) {
     return (
       <div className="flex-1 bg-[#100E1D] text-white flex items-center justify-center">
@@ -16,7 +16,8 @@ export default function Forecast({ weatherData }) {
   }
 
   const today = weatherData.daily[0];
-  const nextDays = weatherData.daily.slice(1, 6); // próximos 5 días (sin contar hoy)
+
+  const nextDays = weatherData.daily.slice(0, 6);
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp * 1000);
@@ -43,12 +44,40 @@ export default function Forecast({ weatherData }) {
     return `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
   };
 
+  const { isCelsius, setIsCelsius, currentWeather } = useWeather();
+
+  const convertTemp = (temp) =>
+    isCelsius ? Math.round(temp) : Math.round(temp * 1.8 + 32);
+
   return (
     <div className="flex-1 bg-[#100E1D] text-white overflow-x-hidden">
       <div className="max-w-6xl w-full mx-auto px-4 py-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Pronóstico</h2>
+        <div className="flex justify-between items-center mb-6 xl:mx-25">
+          <h2 className="text-3xl font-semibold">Forecast</h2>
           <div className="space-x-2">
+            <div className="inline-flex bg-[#1E213A] p-1 rounded-lg overflow-hidden mr-4 gap-2">
+              <button
+                onClick={() => setIsCelsius(true)}
+                className={`px-3 py-1 rounded-lg transition-colors ${
+                  isCelsius
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-700 text-gray-400 hover:bg-gray-600"
+                }`}
+              >
+                °C
+              </button>
+              <button
+                onClick={() => setIsCelsius(false)}
+                className={`px-3 py-1 rounded-lg transition-colors ${
+                  !isCelsius
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-700 text-gray-400 hover:bg-gray-600"
+                }`}
+              >
+                °F
+              </button>
+            </div>
+
             <button
               onClick={() => setView("today")}
               className={`px-4 py-2 rounded-lg transition-colors ${
@@ -87,10 +116,10 @@ export default function Forecast({ weatherData }) {
             </p>
             <div className="flex justify-center items-center gap-6 text-2xl mb-6">
               <span className="text-red-400">
-                🌡️ {Math.round(today.temp.max)}°
+                🌡️ {convertTemp(today.temp.max)}°
               </span>
               <span className="text-blue-400">
-                ❄️ {Math.round(today.temp.min)}°
+                ❄️ {convertTemp(today.temp.min)}°
               </span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -115,13 +144,12 @@ export default function Forecast({ weatherData }) {
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
-            {/* Vista de tarjetas */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="w-full space-y-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 xl:mx-25">
               {nextDays.map((day, index) => (
                 <div
                   key={index}
-                  className="bg-[#1E213A] p-4 rounded-lg shadow-lg flex flex-col items-center hover:bg-[#2A2D3A] transition-colors cursor-pointer"
+                  className="w-auto h-50 bg-[#1E213A] rounded-lg shadow-lg flex flex-col justify-center items-center hover:bg-[#2A2D3A] transition-colors cursor-pointer"
                 >
                   <h3 className="text-sm font-semibold mb-3 text-blue-300">
                     {formatShortDate(day.dt)}
@@ -134,60 +162,52 @@ export default function Forecast({ weatherData }) {
                   <p className="text-xs mb-3 text-center capitalize text-gray-300">
                     {day.weather[0].description}
                   </p>
-                  <div className="flex justify-between w-full text-sm">
+                  <div className="w-full flex justify-between text-sm">
                     <span className="text-red-400">
-                      🌡️ {Math.round(day.temp.max)}°
+                      🌡️ {convertTemp(day.temp.max)}°
                     </span>
                     <span className="text-blue-400">
-                      ❄️ {Math.round(day.temp.min)}°
+                      ❄️ {convertTemp(day.temp.min)}°
                     </span>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Vista de lista detallada */}
-            <div className="bg-[#1E213A] rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4 text-blue-300">
-                Detalles del pronóstico
+            <div className="bg-[#1E213A] rounded-lg p-6 xl:mx-25">
+              <h3 className="text-3xl font-semibold mb-4 text-blue-300">
+                Today`s Hightlights
               </h3>
-              <div className="space-y-3">
-                {nextDays.map((day, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-[#2A2D3A] rounded-lg"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm font-medium text-gray-300 min-w-[80px]">
-                        {formatShortDate(day.dt)}
-                      </div>
-                      <img
-                        src={getWeatherIcon(day.weather[0].icon)}
-                        alt={day.weather[0].description}
-                        className="w-12 h-12"
-                      />
-                      <div>
-                        <p className="text-sm capitalize text-gray-200">
-                          {day.weather[0].description}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          Humedad: {day.humidity}%
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="text-red-400">
-                        🌡️ {Math.round(day.temp.max)}°
-                      </span>
-                      <span className="text-blue-400">
-                        ❄️ {Math.round(day.temp.min)}°
-                      </span>
-                      <span className="text-gray-400">
-                        💨 {Math.round(day.wind_speed)} km/h
-                      </span>
-                    </div>
-                  </div>
-                ))}
+            </div>
+
+            <div className="w-full flex items-center justify-center mt-8 px-3 lg:px-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                <div className="w-[260px] md:w-[180px] lg:w-[300px] xl:w-[350px] h-[200px] bg-[#1E213A] p-3 rounded-lg">
+                  <p className="text-gray-400">Humedad</p>
+                  <p className="text-white text-lg">
+                    {currentWeather ? `${currentWeather.humidity}%` : "—"}
+                  </p>
+                </div>
+                <div className="w-[260px] md:w-[180px] lg:w-[300px] xl:w-[350px] h-[200px] bg-[#1E213A] p-3 rounded-lg">
+                  <p className="text-gray-400">Viento</p>
+                  <p className="text-white text-lg">
+                    {currentWeather
+                      ? `${Math.round(currentWeather.wind_speed)} km/h`
+                      : "—"}
+                  </p>
+                </div>
+                <div className="w-[260px] md:w-[180px] lg:w-[300px] xl:w-[350px] h-[200px] bg-[#1E213A] p-3 rounded-lg">
+                  <p className="text-gray-400">Presión</p>
+                  <p className="text-white text-lg">
+                    {currentWeather ? `${currentWeather.pressure} hPa` : "—"}
+                  </p>
+                </div>
+                <div className="w-[260px] md:w-[180px] lg:w-[300px] xl:w-[350px] h-[200px] bg-[#1E213A] p-3 rounded-lg">
+                  <p className="text-gray-400">UV Index</p>
+                  <p className="text-white text-lg">
+                    {currentWeather ? Math.round(currentWeather.uvi) : "—"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

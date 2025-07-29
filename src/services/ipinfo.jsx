@@ -7,6 +7,6 @@ export const getCityFromIP = async () => {
     return data.city;
   } catch (error) {
     console.error("Error al obtener ciudad con IPinfo:", error);
-    return "Bogotá"; // Valor por defecto
+    return "Bogotá";
   }
 };

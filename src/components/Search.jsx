@@ -15,7 +15,6 @@ export default function Search({ setCity, onClose }) {
       return;
     }
 
-    // Debounce para evitar muchas llamadas a la API
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
@@ -145,7 +144,6 @@ export default function Search({ setCity, onClose }) {
         </button>
       </div>
 
-      {/* Resultados de búsqueda */}
       <div className="mt-4 max-h-64 overflow-y-auto">
         {loading && (
           <div className="text-center text-gray-400 py-4">Buscando...</div>
