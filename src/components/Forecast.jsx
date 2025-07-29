@@ -17,7 +17,7 @@ export default function Forecast({ weatherData }) {
 
   const today = weatherData.daily[0];
 
-  const nextDays = weatherData.daily.slice(0, 6);
+  const nextDays = weatherData.daily.slice(1, 6);
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp * 1000);
@@ -77,32 +77,34 @@ export default function Forecast({ weatherData }) {
                 °F
               </button>
             </div>
-
-            <button
-              onClick={() => setView("today")}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                view === "today"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
-            >
-              Hoy
-            </button>
-            <button
-              onClick={() => setView("5days")}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                view === "5days"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-              }`}
-            >
-              5 días
-            </button>
+            <div className="inline-flex bg-[#1E213A] p-1 rounded-lg overflow-hidden mr-4 gap-2">
+              <button
+                onClick={() => setView("today")}
+                className={`px-3 py-1 rounded-lg transition-colors ${
+                  view === "today"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+              >
+                Hoy
+              </button>
+              <button
+                onClick={() => setView("5days")}
+                className={`px-3 py-1 rounded-lg transition-colors ${
+                  view === "5days"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+              >
+                5 días
+              </button>
+            </div>
           </div>
         </div>
 
+        {/* INFORMACION CLIMA HOY */}
         {view === "today" ? (
-          <div className="bg-[#1E213A] p-8 rounded-lg text-center shadow-lg">
+          <div className="bg-[#1E213A] p-8 rounded-lg text-center shadow-lg lg:mx-20">
             <h3 className="text-xl font-semibold mb-4 text-blue-300">
               {formatDate(today.dt)}
             </h3>
@@ -122,30 +124,56 @@ export default function Forecast({ weatherData }) {
                 ❄️ {convertTemp(today.temp.min)}°
               </span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div className="bg-[#2A2D3A] p-3 rounded-lg">
-                <p className="text-gray-400 mb-1">Humedad</p>
-                <p className="text-white text-lg">{today.humidity}%</p>
-              </div>
-              <div className="bg-[#2A2D3A] p-3 rounded-lg">
-                <p className="text-gray-400 mb-1">Viento</p>
-                <p className="text-white text-lg">
-                  {Math.round(today.wind_speed)} km/h
+
+            {/* CARDS CLIMA HOY */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 mt-8 shadow-xl border border-[#131525] lg:mx-25">
+              {/* WIND STATUS */}
+              <div className="bg-[#1E213A] p-6 rounded-lg shadow-xl border border-[#131525]">
+                <h4 className="text-gray-400 text-sm mb-2">Wind Status</h4>
+                <p className="text-3xl font-semibold text-white">
+                  {today.wind_speed.toFixed(1)}{" "}
+                  <span className="text-sm">m/s</span>
+                </p>
+                <p className="text-gray-400 text-sm mt-2">
+                  Dirección: {today.wind_deg}°
                 </p>
               </div>
-              <div className="bg-[#2A2D3A] p-3 rounded-lg">
-                <p className="text-gray-400 mb-1">Presión</p>
-                <p className="text-white text-lg">{today.pressure} hPa</p>
+              {/* HUMIDITY */}
+              <div className="bg-[#1E213A] p-6 rounded-lg shadow-xl border border-[#131525]">
+                <h4 className="text-gray-400 text-sm mb-2">Humidity</h4>
+                <p className="text-3xl font-semibold text-white">
+                  {today.humidity}%
+                </p>
+                <div className="w-full h-2 bg-gray-700 rounded mt-2">
+                  <div
+                    className="h-full bg-yellow-400 rounded"
+                    style={{ width: `${today.humidity}%` }}
+                  ></div>
+                </div>
               </div>
-              <div className="bg-[#2A2D3A] p-3 rounded-lg">
-                <p className="text-gray-400 mb-1">UV Index</p>
-                <p className="text-white text-lg">{Math.round(today.uvi)}</p>
+
+              {/* VISIBILITY */}
+              <div className="bg-[#1E213A] p-6 rounded-lg shadow-xl border border-[#131525]">
+                <h4 className="text-gray-400 text-sm mb-2">Visibility</h4>
+                <p className="text-3xl font-semibold text-white">
+                  {(weatherData.current.visibility / 1000).toFixed(2)}{" "}
+                  <span className="text-sm">km</span>
+                </p>
+              </div>
+
+              {/* AIR PRESSURE */}
+              <div className="bg-[#1E213A] p-6 rounded-lg shadow-xl border border-[#131525]">
+                <h4 className="text-gray-400 text-sm mb-2">Air Pressure</h4>
+                <p className="text-3xl font-semibold text-white">
+                  {today.pressure} <span className="text-sm">mb</span>
+                </p>
               </div>
             </div>
           </div>
         ) : (
           <div className="w-full space-y-6">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 xl:mx-25">
+            {/* CARDS PROXIMOS 5 DIAS */}
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 xl:mx-25 border-2 border-[#131525] p-4">
               {nextDays.map((day, index) => (
                 <div
                   key={index}
@@ -174,40 +202,55 @@ export default function Forecast({ weatherData }) {
               ))}
             </div>
 
-            <div className="bg-[#1E213A] rounded-lg p-6 xl:mx-25">
+            <div className="flex items-center justify-center border-2 border-[#131525] rounded-lg p-1 xl:mx-25">
               <h3 className="text-3xl font-semibold mb-4 text-blue-300">
                 Today`s Hightlights
               </h3>
             </div>
 
-            <div className="w-full flex items-center justify-center mt-8 px-3 lg:px-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                <div className="w-[260px] md:w-[180px] lg:w-[300px] xl:w-[350px] h-[200px] bg-[#1E213A] p-3 rounded-lg">
-                  <p className="text-gray-400">Humedad</p>
-                  <p className="text-white text-lg">
-                    {currentWeather ? `${currentWeather.humidity}%` : "—"}
-                  </p>
+            {/* CARDS LO MAS DESTACADO */}
+
+            <div className="text-center items-center grid grid-cols-1 md:grid-cols-2 gap-6 p-4 mt-3 shadow-xl border-2 border-[#131525] lg:mx-25">
+              {/* WIND STATUS */}
+              <div className="h-45 bg-[#1E213A] p-6 rounded-lg shadow-xl border border-[#131525] gap-4">
+                <h4 className="text-gray-400 text-md mb-2">Wind Status</h4>
+                <p className="text-6xl font-bold text-white">
+                  {today.wind_speed.toFixed(1)}{" "}
+                  <span className="text-[30px]">m/s</span>
+                </p>
+                <p className="text-gray-400 text-md mt-2">
+                  Dirección: {today.wind_deg}°
+                </p>
+              </div>
+              {/* HUMIDITY */}
+              <div className="h-45 bg-[#1E213A] p-6 rounded-lg shadow-xl border border-[#131525]">
+                <h4 className="text-gray-400 text-md mb-2">Humidity</h4>
+                <p className="text-6xl font-bold text-white">
+                  {today.humidity}%
+                </p>
+                <div className="w-full h-2 bg-gray-700 rounded mt-4">
+                  <div
+                    className="h-full bg-yellow-400 rounded"
+                    style={{ width: `${today.humidity}%` }}
+                  ></div>
                 </div>
-                <div className="w-[260px] md:w-[180px] lg:w-[300px] xl:w-[350px] h-[200px] bg-[#1E213A] p-3 rounded-lg">
-                  <p className="text-gray-400">Viento</p>
-                  <p className="text-white text-lg">
-                    {currentWeather
-                      ? `${Math.round(currentWeather.wind_speed)} km/h`
-                      : "—"}
-                  </p>
-                </div>
-                <div className="w-[260px] md:w-[180px] lg:w-[300px] xl:w-[350px] h-[200px] bg-[#1E213A] p-3 rounded-lg">
-                  <p className="text-gray-400">Presión</p>
-                  <p className="text-white text-lg">
-                    {currentWeather ? `${currentWeather.pressure} hPa` : "—"}
-                  </p>
-                </div>
-                <div className="w-[260px] md:w-[180px] lg:w-[300px] xl:w-[350px] h-[200px] bg-[#1E213A] p-3 rounded-lg">
-                  <p className="text-gray-400">UV Index</p>
-                  <p className="text-white text-lg">
-                    {currentWeather ? Math.round(currentWeather.uvi) : "—"}
-                  </p>
-                </div>
+              </div>
+
+              {/* VISIBILITY */}
+              <div className="h-45 bg-[#1E213A] p-6 rounded-lg shadow-xl border border-[#131525]">
+                <h4 className="text-gray-400 text-md mb-2">Visibility</h4>
+                <p className="text-6xl font-bold text-white">
+                  {(weatherData.current.visibility / 1000).toFixed(2)}{" "}
+                  <span className="text-[30px]">km</span>
+                </p>
+              </div>
+
+              {/* AIR PRESSURE */}
+              <div className="h-45 bg-[#1E213A] p-6 rounded-lg shadow-xl border border-[#131525]">
+                <h4 className="text-gray-400 text-md mb-2">Air Pressure</h4>
+                <p className="text-6xl font-bold text-white">
+                  {today.pressure} <span className="text-[30px]">mb</span>
+                </p>
               </div>
             </div>
           </div>
