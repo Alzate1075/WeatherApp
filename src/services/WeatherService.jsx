@@ -112,7 +112,6 @@ function transformWeatherData(apiData) {
     }
   });
 
-  // Convertir el Map a array y devolver todos los días agrupados
   const daily = Array.from(dailyMap.values());
 
   return {

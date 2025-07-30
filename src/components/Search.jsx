@@ -182,8 +182,10 @@ export default function Search({ setCity, onClose }) {
       </div>
 
       <div className="mt-8 text-center text-gray-400">
-        <p>Escribe para buscar ciudades o usa las flechas para navegar</p>
-        <p className="text-sm mt-2">Presiona Enter para seleccionar o buscar</p>
+        <p>Escribe para buscar ciudades.</p>
+        <p className="text-sm mt-2">
+          Presiona Enter para seleccionar o buscar.
+        </p>
       </div>
     </div>
   );

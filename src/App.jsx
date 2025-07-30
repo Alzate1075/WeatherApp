@@ -19,7 +19,7 @@ function App() {
       setWeatherData(data);
     } catch (error) {
       console.error("Error fetching weather data:", error);
-      setError(error.message);
+      setError("No se pudo cargar el clima. Intenta más tarde.");
     } finally {
       setLoading(false);
     }
@@ -41,12 +41,11 @@ function App() {
     const fetchInitialWeather = async () => {
       try {
         const locationData = await getLocationByIP();
-        const cityName = locationData.city;
+        const cityName = locationData?.city || "Bogotá";
         setCity(cityName);
         await fetchWeatherData(cityName);
       } catch (error) {
         console.error("Error getting initial location:", error);
-
         await fetchWeatherData("Bogotá");
       }
     };

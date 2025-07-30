@@ -34,7 +34,11 @@ export function WeatherProvider({ children }) {
         `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
       );
 
-      setWeatherData(resForecast.data);
+      setWeatherData({
+        current: resCity.data,
+        forecast: resForecast.data,
+      });
+
       setLoading(false);
     } catch (err) {
       console.error("Error al obtener clima:", err);
